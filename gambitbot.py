@@ -43,8 +43,8 @@ class GambitBot(discord.Client):
 
 
 def main():
-    print(token)
     bot = GambitBot()
+    bot.run(token)
 
 if __name__ == "__main__":
     main()
