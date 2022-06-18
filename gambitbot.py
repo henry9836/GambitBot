@@ -26,6 +26,8 @@ class GambitBot(discord.Client):
                                 if (x % gambitReplaceNthWord) == 0 and x != 0:
                                     responseList[x] = "gambit"
                             response = '"' + ' '.join(responseList) + '" - <@' + str(messages[i].author.id) + '>'
+                            if (str(messages[i].author.id) == "205899903594004489"): #If is cris
+                                await messages[i].delete()
                             await messageChannel.send(response)
                             return
         await message.reply("Could not find a message long enough to grace with gambit >w<")
