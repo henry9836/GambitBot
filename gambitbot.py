@@ -41,7 +41,7 @@ class GambitBot(discord.Client):
             await message.reply("Could not find a message long enough to grace with gambit >w<")
         elif (args[0] == "update"):
             #Volt or Nitro
-            if (message.author.id == "102606498860896256") or (message.author.id == "269672239245295617"):
+            if (str(message.author.id) == "102606498860896256") or (str(message.author.id) == "269672239245295617"):
                 print("Updating...")
                 exit(0)
         return
