@@ -17,11 +17,17 @@ class GambitBot(discord.Client):
         #Gambify Command
         if (args[0] == "gambify"):
             searchTemp = gambitSearchHistroy
+            replaceNthTemp = gambitReplaceNthWord
             if (len(args) > 1):
                 try:
                     searchTemp = int(args[1])
                 except:
                     print(args[1] + " is not a valid argument")
+            if (len(args) > 2):
+                try:
+                    replaceNthTemp = int(args[2])
+                except:
+                    print(args[2] + " is not a valid argument")
             messages = await messageChannel.history(limit=searchTemp).flatten()
             for i in range(len(messages)):
                 if i != 0:
@@ -30,7 +36,7 @@ class GambitBot(discord.Client):
                         if (len(responseList) >= 4):
                             #Replace every nth word with gambit
                             for x in range(len(responseList)):
-                                if (x % gambitReplaceNthWord) == 0 and x != 0:
+                                if (x % replaceNthTemp) == 0 and x != 0:
                                     responseList[x] = "gambit"
                             response = '"' + ' '.join(responseList) + '" - <@' + str(messages[i].author.id) + '>'
                             #If is cris
