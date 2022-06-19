@@ -20,12 +20,12 @@ class GambitBot(discord.Client):
             replaceNthTemp = gambitReplaceNthWord
             if (len(args) > 1):
                 try:
-                    searchTemp = int(args[1])
+                    replaceNthTemp = int(args[1])
                 except:
                     print(args[1] + " is not a valid argument")
             if (len(args) > 2):
                 try:
-                    replaceNthTemp = int(args[2])
+                    searchTemp = int(args[2])
                 except:
                     print(args[2] + " is not a valid argument")
             messages = await messageChannel.history(limit=searchTemp).flatten()
