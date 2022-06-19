@@ -33,7 +33,7 @@ class GambitBot(discord.Client):
                 if i != 0:
                     if (messages[i].author != self.user):
                         responseList = messages[i].content.split(' ')
-                        if (len(responseList) >= 4):
+                        if (len(responseList) >= replaceNthTemp):
                             #Replace every nth word with gambit
                             for x in range(len(responseList)):
                                 if (x % replaceNthTemp) == 0 and x != 0:
