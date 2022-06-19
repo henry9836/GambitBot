@@ -40,7 +40,7 @@ class GambitBot(discord.Client):
                                     responseList[x] = "gambit"
                             response = '"' + ' '.join(responseList) + '" - <@' + str(messages[i].author.id) + '>'
                             #If is cris
-                            if (str(messages[i].author.id) == "205899903594004489"):
+                            if (str(messages[i].author.id) == "462830068247429121"):
                                 await messages[i].delete()
                             await messageChannel.send(response)
                             return
