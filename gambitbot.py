@@ -12,10 +12,17 @@ class GambitBot(discord.Client):
         #Remove Command Prefix
         messageContent = message.content[1:]
         messageChannel = message.channel
+        args = messageContent.split(' ')
 
         #Gambify Command
-        if (messageContent == "gambify"):
-            messages = await messageChannel.history(limit=gambitSearchHistroy).flatten()
+        if (args[0] == "gambify"):
+            searchTemp = gambitSearchHistroy
+            if (len(args) > 1):
+                try:
+                    searchTemp = int(args[1])
+                except:
+                    print(args[1] + " is not a valid argument")
+            messages = await messageChannel.history(limit=searchTemp).flatten()
             for i in range(len(messages)):
                 if i != 0:
                     if (messages[i].author != self.user):
@@ -26,11 +33,17 @@ class GambitBot(discord.Client):
                                 if (x % gambitReplaceNthWord) == 0 and x != 0:
                                     responseList[x] = "gambit"
                             response = '"' + ' '.join(responseList) + '" - <@' + str(messages[i].author.id) + '>'
-                            if (str(messages[i].author.id) == "205899903594004489"): #If is cris
+                            #If is cris
+                            if (str(messages[i].author.id) == "205899903594004489"):
                                 await messages[i].delete()
                             await messageChannel.send(response)
                             return
-        await message.reply("Could not find a message long enough to grace with gambit >w<")
+            await message.reply("Could not find a message long enough to grace with gambit >w<")
+        elif (args[0] == "update"):
+            #Volt or Nitro
+            if (message.author.id == "102606498860896256") or (message.author.id == "269672239245295617"):
+                print("Updating...")
+                exit(0)
         return
 
     async def on_ready(self):
@@ -40,7 +53,6 @@ class GambitBot(discord.Client):
         if message.author == self.user:
             return
         if message.content.startswith(prefix):
-            print('Message from {0.author}: {0.content}'.format(message))
             await self.processMessage(message)
 
 
