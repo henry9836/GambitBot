@@ -1,12 +1,36 @@
 #!/usr/bin/python3
 import discord
 
+wordReplacerDict = {
+    "gambify" : "gambit",
+    "wobify" : "wob"
+}
+
 token = open("token").read()
 prefix = '!'
 gambitReplaceNthWord = 4
-gambitSearchHistroy = 3
+gambitSearchHistroy = 5
 
 class GambitBot(discord.Client):
+
+    async def replaceWordsAndResent(self, message, replaceWord, nth, searchBack, messageChannel):
+        messages = await messageChannel.history(limit=searchBack).flatten()
+        for i in range(len(messages)):
+            if i != 0:
+                if (messages[i].author != self.user):
+                    responseList = messages[i].content.split(' ')
+                    if (len(responseList) >= nth):
+                        #Replace every nth word with gambit
+                        for x in range(len(responseList)):
+                            if (x % nth) == 0 and x != 0:
+                                responseList[x] = replaceWord
+                        response = '"' + ' '.join(responseList) + '" - <@' + str(messages[i].author.id) + '>'
+                        #If is cris
+                        if (str(messages[i].author.id) == "462830068247429121"):
+                            await messages[i].delete()
+                        await messageChannel.send(response)
+                        return
+        await message.reply(f"Could not find a message long enough to grace with {replaceWord} >w<")
 
     async def processMessage(self, message):
         #Remove Command Prefix
@@ -15,7 +39,7 @@ class GambitBot(discord.Client):
         args = messageContent.split(' ')
 
         #Gambify Command
-        if (args[0] == "gambify"):
+        if (args[0] in wordReplacerDict):
             searchTemp = gambitSearchHistroy
             replaceNthTemp = gambitReplaceNthWord
             if (len(args) > 1):
@@ -28,23 +52,7 @@ class GambitBot(discord.Client):
                     searchTemp = int(args[2])
                 except:
                     print(args[2] + " is not a valid argument")
-            messages = await messageChannel.history(limit=searchTemp).flatten()
-            for i in range(len(messages)):
-                if i != 0:
-                    if (messages[i].author != self.user):
-                        responseList = messages[i].content.split(' ')
-                        if (len(responseList) >= replaceNthTemp):
-                            #Replace every nth word with gambit
-                            for x in range(len(responseList)):
-                                if (x % replaceNthTemp) == 0 and x != 0:
-                                    responseList[x] = "gambit"
-                            response = '"' + ' '.join(responseList) + '" - <@' + str(messages[i].author.id) + '>'
-                            #If is cris
-                            if (str(messages[i].author.id) == "462830068247429121"):
-                                await messages[i].delete()
-                            await messageChannel.send(response)
-                            return
-            await message.reply("Could not find a message long enough to grace with gambit >w<")
+            await self.replaceWordsAndResent(message, wordReplacerDict[args[0]], replaceNthTemp, searchTemp, messageChannel)
         elif (args[0] == "update"):
             #Volt or Nitro
             if (str(message.author.id) == "102606498860896256") or (str(message.author.id) == "269672239245295617"):
