@@ -12,24 +12,25 @@ gambitReplaceNthWord = 4
 gambitSearchHistroy = 5
 
 class GambitBot(discord.Client):
-
     async def replaceWordsAndResent(self, message, replaceWord, nth, searchBack, messageChannel):
-        messages = await messageChannel.history(limit=searchBack).flatten()
+        messages = []
+        async for msg in messageChannel.history(limit=searchBack):
+            messages.append(msg)
+        
         for i in range(len(messages)):
             if i != 0:
-                if (messages[i].author != self.user):
+                if messages[i].author != self.user:
                     responseList = messages[i].content.split(' ')
-                    if (len(responseList) >= nth):
-                        #Replace every nth word with gambit
+                    if len(responseList) >= nth:
                         for x in range(len(responseList)):
                             if (x % nth) == 0 and x != 0:
                                 responseList[x] = replaceWord
                         response = '"' + ' '.join(responseList) + '" - <@' + str(messages[i].author.id) + '>'
-                        #If is cris
-                        if (str(messages[i].author.id) == "462830068247429121"):
+                        if str(messages[i].author.id) == "462830068247429121":
                             await messages[i].delete()
                         await messageChannel.send(response)
                         return
+        
         await message.reply(f"Could not find a message long enough to grace with {replaceWord} >w<")
 
     async def processMessage(self, message):
@@ -37,7 +38,7 @@ class GambitBot(discord.Client):
         messageContent = message.content[1:]
         messageChannel = message.channel
         args = messageContent.split(' ')
-
+        print(args)
         #Gambify Command
         if (args[0] in wordReplacerDict):
             searchTemp = gambitSearchHistroy
@@ -71,7 +72,9 @@ class GambitBot(discord.Client):
 
 
 def main():
-    bot = GambitBot()
+    intents = discord.Intents.default()
+    intents.message_content = True
+    bot = GambitBot(intents=intents)
     bot.run(token)
 
 if __name__ == "__main__":
